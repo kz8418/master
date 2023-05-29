@@ -22,7 +22,7 @@ cron 3 0,23 * * * jd_dpsign.js, tag=店铺签到
 
 var token = [//内置token
 
-    //"26348C2649BB6759D7AF11AB90A1B0C3",100豆5.30
+    //"26348C2649BB6759D7AF11AB90A1B0C3",
     
   
 
