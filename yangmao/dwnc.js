@@ -32,14 +32,6 @@ if dewu_x_auth_token:
     X_AUTH_TOKEN += dewu_x_auth_token.replace("&", "\n").split("\n")
 
 
-# 下载作者的助力码
-def download_author_share_code():
-    global AUTHOR_SHARE_CODE_LIST
-    response = requests.get('https://netcut.cn/p/d3436822ba03c0c3')
-    _list = re.findall(r'"note_content":"(.*?)"', response.text)
-    if _list:
-        share_code_list = _list[0].split(r'\n')
-        AUTHOR_SHARE_CODE_LIST += share_code_list
 
 
 # 获得url params 中键为key的值
