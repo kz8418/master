@@ -1,5 +1,5 @@
 # -*- coding: UTF-8 -*-
-# Version: v1.4
+# Version: v1.5
 # Created by lstcml on 2022/07/21
 # 建议定时10分钟：*/10 * * * *
 
@@ -9,6 +9,10 @@
 2、新增变量qlnwct_authtoken，值为你账户的authtoken，运行脚本
 
 更新记录：
+v1.5
+1、移除自动检测更新；
+
+
 v1.4
 1、兼容新版的青龙面板；
 
@@ -33,23 +37,10 @@ from time import sleep
 path = os.path.split(os.path.realpath(__file__))[0]
 log_path = os.path.join(path, "nwct_cpolar_log")
 log_name = os.path.join(log_path, "cpolar")
-log_file = os.path.join(log_path, "cpolar.master.log") 
+log_file = os.path.join(log_path, "cpolar.master.log") 
 app_path = os.path.join(path, "cpolar")
 commond = "python3 " + os.path.join(path, "cpolar.py") + " &"
 
-# 检查更新
-def update():
-    print("当前运行的脚本版本：" + str(version))
-    try:
-        r1 = requests.get("https://github.com/a512154224/qinglongscripts/raw/main/nwct_cpolar.py").text
-        r2 = re.findall(re.compile("version = \d.\d"), r1)[0].split("=")[1].strip()
-        if float(r2) > version:
-            print("发现新版本：" + r2)
-            print("正在自动更新脚本...")
-            os.system("killall cpolar")
-            os.system("ql raw https://github.com/a512154224/qinglongscripts/raw/main/nwct_cpolar.py &")
-    except:
-        pass
 
 # 判断CPU架构
 def check_os():
@@ -67,7 +58,7 @@ def check_os():
 # 下载主程序
 def download_cpolar(cpu):
     if not os.path.exists("cpolar.py"):
-        res = requests.get("https://github.com/a512154224/qinglongscripts/raw/main/cpolar.py")
+        res = requests.get("https://gitee.com/lstcml/scripts/raw/master/cpolar.py")
         with open("cpolar.py", "wb") as f:
             f.write(res.content)
     if not os.path.exists("cpolar"):
@@ -75,7 +66,7 @@ def download_cpolar(cpu):
         with open("cpolar.zip", "wb") as f:
             f.write(res.content)
         os.system("unzip cpolar.zip >/dev/null 2>&1&&rm -f cpolar.zip&&chmod +x cpolar&&" + app_path + " authtoken  " + authtoken + ">/dev/null 2>&1")
-    start_nwct()        
+    start_nwct()        
 
 # 获取穿透url
 def get_url():
@@ -89,7 +80,7 @@ def get_url():
                 return i.replace('\\', '')
                 break
     except:
-        return "https://github.com/a512154224/qinglongscripts"
+        return "https://gitee.com/lstcml/scripts"
 
 # 进程守护
 def process_daemon():
@@ -98,7 +89,7 @@ def process_daemon():
     qlurl = get_url()
     try:
         res = requests.get(qlurl + "/login").text
-        if "/images/g5.ico" in res or "/images/favicon.svg" in res:
+        if "/images/g5.ico" in res or "/images/favicon.svg" in res or "whyour" in res:
             return True
         else:
             return False
@@ -132,7 +123,7 @@ def load_send():
     sys.path.append(cur_path)
     sendNotifPath = cur_path + "/sendNotify.py"
     if not os.path.exists(sendNotifPath):
-        res = requests.get("https://github.com/a512154224/qinglongscripts/raw/main/sendNotify.py")
+        res = requests.get("https://gitee.com/lstcml/scripts/raw/master/sendNotify.py")
         with open(sendNotifPath, "wb") as f:
             f.write(res.content)
 
@@ -145,7 +136,6 @@ def load_send():
 
 
 if __name__ == '__main__':
-    version = 1.4
     try:
         authtoken = os.environ['qlnwct_authtoken']
     except:
@@ -154,15 +144,6 @@ if __name__ == '__main__':
         token = os.environ['PUSH_PLUS_TOKEN']
     except:
         token = ""
-    try:
-        check_update = os.environ['qlnwctupdate']
-    except:
-        check_update = "true"
-
-    if check_update != "false":
-        update()
-    else:
-        print("变量qlnwctupdate未设置，脚本自动更新未开启！")
     if len(authtoken ) < 1:
         print("请新增变量qlnwct_authtoken！")
     else:
