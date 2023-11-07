@@ -55,7 +55,7 @@ class Ydbs():
 
     def sign(self):
         time.sleep(0.5)
-        step = str(random.randint(20000, 30000))
+        step = str(random.randint(40000, 45000))
         url = "https://apis.jxcxin.cn/api/mi?user=" + self.user + "&password=" + self.psw + "&step=" + step
         r = requests.get(url)
         if r.status_code != 200:
